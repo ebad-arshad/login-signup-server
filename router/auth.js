@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const Users = require("../models/User");
 const auth = async (req, res) => {
     const SECRET_KEY = "my_secret_key";
-    console.log(req);
     if (!req?.cookies?.Token) {
         res.send({
             message: "no user signed in"

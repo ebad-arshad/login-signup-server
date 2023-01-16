@@ -7,14 +7,17 @@ import { BsEye } from 'react-icons/bs'
 import { BsEyeSlash } from 'react-icons/bs'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
 
-const SignUp = ({ isLoggedIn, reload }) => {
+const SignUp = () => {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch()
+    const userStore = useSelector(state => state.userStore)
 
     useEffect(() => {
-        isLoggedIn ? navigate('/') : null;
-    }, [])
+        userStore.isUser ? navigate('/') : null;
+    }, [userStore.isUser])
 
     const [name, setName] = useState({ firstName: '', lastName: '' });
     const [email, setEmail] = useState('');
@@ -38,7 +41,7 @@ const SignUp = ({ isLoggedIn, reload }) => {
                 }, {
                     withCredentials: true
                 })
-                reload(e => !e);
+                dispatch({ type: 'RELOAD', reload: !userStore.reload })
             } else {
                 setRegexFlag(true)
                 setTimeout(() => {

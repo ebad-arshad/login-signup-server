@@ -8,14 +8,17 @@ import { BsEyeSlash } from 'react-icons/bs'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
 
-const Login = ({ isLoggedIn, reload }) => {
+const Login = () => {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const userStore = useSelector(state => state.userStore)
 
     useEffect(() => {
-        isLoggedIn ? navigate('/') : null;
-    }, [])
+        userStore.isUser ? navigate('/') : null;
+    }, [userStore.isUser])
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -34,7 +37,7 @@ const Login = ({ isLoggedIn, reload }) => {
                 }, {
                     withCredentials: true
                 })
-                reload(e => !e);
+                dispatch({ type: 'RELOAD', reload: !userStore.reload })
             } else {
                 setRegexFlag(true)
                 setTimeout(() => {
@@ -74,12 +77,6 @@ const Login = ({ isLoggedIn, reload }) => {
                             <BsEyeSlash onClick={() => setEyeOpen(true)} color='white' size={20} className='cursor-pointer select-none' />
                         }
                     </div>
-                </div>
-                <div className='text-white text-[13px] flex items-center gap-3 w-full mt-[30px] cursor-pointer'>
-                    <input className='scale-125 cursor-pointer outline-none accent-[#333]' type="checkbox" id='rememberMe' />
-                    <label htmlFor="rememberMe" className='cursor-pointer w-full select-none'>
-                        Remember me
-                    </label>
                 </div>
                 <button className='bg-white p-[14px] rounded-[25px] mt-[30px] w-[120px] text-[#555] text-[16px] active:opacity-[.2] outline-none' onClick={loginBtn}>Login</button>
                 <button onClick={() => navigate('/signup')} className='bg-transparent text-[#e5e5e5] text-[14px] mt-[30px] active:opacity-[.2] outline-none'>Create an account?</button>

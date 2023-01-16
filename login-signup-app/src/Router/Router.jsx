@@ -5,31 +5,32 @@ import SignUp from '../container/SignUp'
 import Home from '../container/Home'
 import ErrorPage from '../container/ErrorPage'
 import axios from 'axios'
+import { useDispatch, useSelector } from 'react-redux'
 
 const Router = () => {
 
-    const [userData, setUserData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [reloadPage, setReloadPage] = useState(false);
+
+    const dispatch = useDispatch();
+    const userStore = useSelector(state => state.userStore);
 
     useEffect(() => {
         async function auth() {
             await axios.get('http://localhost:5001/auth', {
                 withCredentials: true
             })
-                .then((data) => { setUserData(data.data.data); setIsLoading(false) })
+                .then((res) => { dispatch({ type: 'USER_CONNECTED', isUser: res.data.data ? true : false, userData: res.data.data }); setIsLoading(false) })
                 .catch((err) => console.log(err))
         }
         auth()
-        return () => { setUserData(null); setIsLoading(true) }
-    }, [reloadPage])
+    }, [userStore.reload])
 
     return isLoading ? null : (
         <BrowserRouter>
             <Routes>
-                <Route path='/' element={<Home reload={setReloadPage} isLoggedIn={userData ? true : false} />} />
-                <Route path='/login' element={<Login reload={setReloadPage} isLoggedIn={userData ? true : false} />} />
-                <Route path='/signup' element={<SignUp reload={setReloadPage} isLoggedIn={userData ? true : false} />} />
+                <Route path='/' element={<Home />} />
+                <Route path='/login' element={<Login />} />
+                <Route path='/signup' element={<SignUp />} />
                 <Route path='/*' element={<ErrorPage />} />
             </Routes>
         </BrowserRouter >

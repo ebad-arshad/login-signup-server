@@ -40,16 +40,20 @@ const signUp = async (req, res) => {
                                 })
                                     .status(200)
                                     .send({
-                                        firstName,
-                                        lastName,
-                                        email,
+                                        message: "signup successful",
+                                        profile: {
+                                            firstName,
+                                            lastName,
+                                            email,
+                                            _id: result._id
+                                        }
                                     });
                             } else {
                                 res.status(500).send({ message: "internal server error" });
                             }
                         });
                 })
-
+                    .catch((err) => res.status(401).send({ message: "password is incorrect" }))
             }
         } else {
             res.status(500).send({ message: "db error in query" });
